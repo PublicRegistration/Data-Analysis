@@ -1,0 +1,67 @@
+Schemas
+
+-First see what spark gave the schema with
+	- rc.printSchema()
+
+-You can look at all the labels during this time too.
+
+-Redefine the schema by listing the labels
+	- from pyspark.sql.type import StringType, TimestampType, DoubleType, etc...
+	- labels = [("Label 1", StringType()),
+		     ("Label 2", IntegerType()]
+	- schema = StructType([ StructField(x[1],x[2],True) for x in labels ])
+	- rc = spark.read.csv("Sample-Data.csv", schema=schema)
+
+
+Column Manipulation
+
+-Show Columns
+	-df.column
+
+-Can be selected a variety of ways
+	- df.Column1 (dot notation has limitation)
+	- df['Column1']
+	- df.select(col('Column1'))
+
+-Select multiple as list or (Recommended) the select command
+	- df[['Column1','Column2']]
+	- df.select('Column1','Column2').show(n)
+
+-Add a column
+	- df.withColumn('ColumnName',2 * df['AColumn'])
+*PANDAS	- df['ColumnX'] = 2*df['Column']
+
+	-Use lit to fill the column on start with a specific value
+		- from pyspark.sql.functions import lit
+		- df.withColumn('ColumnName', lit('Data')
+
+-Rename a column
+	- df.withColumnRenamed(ExistingColumnName,NewColumnName)
+*PANDAS	- df.rename(columns={'ExistingColumnName':'NewColumnName'})
+
+-Drop/Remove a column
+	- df = df.drop('Column1', 'Column2', 'Column3')
+*PANDAS	- df = df.drop('ColumnX, inplace=True)
+
+-Group Columns
+	- df.groupBy('ColumnX')
+
+
+Row Manipulation
+
+-Filter Rows
+	- df.filter(col('ColumnX') > 1)
+*PANDAS	- df[df.ColumnX > 1]
+
+-Show only Unique Rows
+	- df.select('ColumnX').distinct().show(n)
+*PANDAS	- df.ColumnX.unique()
+
+-Sort Rows
+	- df.orderBy(col('ColumnX'), ascending=True/False)
+*PANDAS	- df.ColumnX.sort.value(by=ascending)
+
+-Append Rows to DataFrame (requires same num. of columns and schema)
+	- df.union(df2)
+*PANDAS	- import pandas as pd
+	  pd.concat([df,df2])
